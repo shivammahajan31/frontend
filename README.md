@@ -1,73 +1,180 @@
-# React + TypeScript + Vite
+# Preproute Test Assignment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This project is a Test Management System built using React, TypeScript, Vite, React Router, React Hook Form, and Tailwind CSS.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The application allows users to create tests, add questions, preview test details, and publish tests through a multi-step workflow.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+### Authentication
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* User Login
+* Token-based authentication using localStorage
+* Protected Routes
+* Logout functionality
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Dashboard
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* View all created tests
+* Display test details
+* Create new test
+* Delete test
+* View test preview
+* Logout
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Create Test
+
+Users can create a test with:
+
+* Test Name
+* Subject
+* Difficulty Level
+* Test Type
+* Total Time
+* Total Marks
+* Positive Marks
+* Negative Marks
+* Unattempt Marks
+* Topics
+* Sub Topics
+
+### Add Questions
+
+Users can add multiple questions including:
+
+* Question Statement
+* Four Options
+* Correct Answer
+* Explanation
+* Difficulty
+* Topic
+* Sub Topic
+* Media URL
+
+### Preview & Publish
+
+* Preview all added questions
+* Review question details
+* Publish test
+* Redirect to Dashboard
+
+---
+
+## Tech Stack
+
+### Frontend
+
+* React
+* TypeScript
+* Vite
+* React Router DOM
+* React Hook Form
+* Tailwind CSS
+
+### Storage
+
+* Browser LocalStorage
+
+---
+
+## Project Structure
+
+```text
+src/
+│
+├── pages/
+│   ├── Login/
+│   ├── Dashboard/
+│   ├── CreateTest/
+│   ├── AddQuestions/
+│   └── PreviewPublish/
+│
+├── routes/
+│
+├── services/
+│
+└── App.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Clone the repository:
+
+```bash
+git clone <repository-url>
 ```
+
+Navigate to the project:
+
+```bash
+cd Preproute-Test
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start development server:
+
+```bash
+npm run dev
+```
+
+---
+
+## Build Project
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+---
+
+## Project Workflow
+
+1. Login
+2. Dashboard
+3. Create Test
+4. Add Questions
+5. Preview Test
+6. Publish Test
+7. Return to Dashboard
+
+---
+
+## Validation
+
+The project has been successfully tested with:
+
+```bash
+npm run build
+```
+
+and produces a successful production build without TypeScript errors.
+
+---
+
+## Future Improvements
+
+* Backend API Integration
+* Edit Existing Tests
+* Edit Existing Questions
+* Search and Filter Tests
+* Subject/Topic APIs
+* Test Analytics Dashboard
+
+---
+
+## Note
+
+This project currently uses LocalStorage for data persistence. The structure has been designed so that API integration can be added in the future with minimal changes.
