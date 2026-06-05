@@ -35,6 +35,11 @@ export default function Dashboard() {
     );
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="flex justify-between items-center mb-6">
@@ -42,17 +47,32 @@ export default function Dashboard() {
           Dashboard
         </h1>
 
-        <button
-          onClick={() => navigate("/create-test")}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-        >
-          Create Test
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => navigate("/create-test")}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Create Test
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {tests.length === 0 ? (
-        <div className="bg-white p-6 rounded shadow">
-          No Tests Created Yet
+        <div className="bg-white p-8 rounded-xl shadow text-center">
+          <h2 className="text-xl font-semibold mb-2">
+            No Tests Created Yet
+          </h2>
+
+          <p className="text-gray-500">
+            Click "Create Test" to create your first test.
+          </p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -65,26 +85,33 @@ export default function Dashboard() {
                 {test.testName}
               </h2>
 
-              <p>
-                Subject: {test.subject}
+              <p className="mt-2">
+                <strong>Subject:</strong> {test.subject}
               </p>
 
               <p>
-                Difficulty: {test.difficulty}
+                <strong>Difficulty:</strong>{" "}
+                {test.difficulty}
               </p>
 
-              <span className="inline-block mt-2 bg-yellow-100 text-yellow-700 px-3 py-1 rounded">
+              <span className="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded">
                 {test.status}
               </span>
 
               <div className="flex gap-2 mt-4">
                 <button
+                  onClick={() =>
+                    navigate("/preview-publish")
+                  }
                   className="bg-blue-500 text-white px-3 py-1 rounded"
                 >
                   View
                 </button>
 
                 <button
+                  onClick={() =>
+                    navigate("/create-test")
+                  }
                   className="bg-green-500 text-white px-3 py-1 rounded"
                 >
                   Edit
