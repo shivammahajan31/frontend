@@ -6,6 +6,14 @@ interface Test {
   testName: string;
   subject: string;
   difficulty: string;
+  testType: string;
+  totalTime: number;
+  totalMarks: number;
+  positiveMarks: number;
+  negativeMarks: number;
+  unattemptMarks: number;
+  topics: string;
+  subTopics: string;
   status: string;
 }
 
@@ -50,14 +58,14 @@ export default function Dashboard() {
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/create-test")}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
           >
             Create Test
           </button>
 
           <button
             onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+            className="bg-red-600 text-white px-4 py-2 rounded-lg"
           >
             Logout
           </button>
@@ -66,13 +74,9 @@ export default function Dashboard() {
 
       {tests.length === 0 ? (
         <div className="bg-white p-8 rounded-xl shadow text-center">
-          <h2 className="text-xl font-semibold mb-2">
+          <h2 className="text-xl font-semibold">
             No Tests Created Yet
           </h2>
-
-          <p className="text-gray-500">
-            Click "Create Test" to create your first test.
-          </p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -81,17 +85,58 @@ export default function Dashboard() {
               key={test.id}
               className="bg-white rounded-xl shadow p-5"
             >
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold mb-3">
                 {test.testName}
               </h2>
 
-              <p className="mt-2">
-                <strong>Subject:</strong> {test.subject}
+              <p>
+                <strong>Subject:</strong>{" "}
+                {test.subject}
               </p>
 
               <p>
                 <strong>Difficulty:</strong>{" "}
                 {test.difficulty}
+              </p>
+
+              <p>
+                <strong>Test Type:</strong>{" "}
+                {test.testType}
+              </p>
+
+              <p>
+                <strong>Topics:</strong>{" "}
+                {test.topics}
+              </p>
+
+              <p>
+                <strong>Sub Topics:</strong>{" "}
+                {test.subTopics}
+              </p>
+
+              <p>
+                <strong>Total Time:</strong>{" "}
+                {test.totalTime} mins
+              </p>
+
+              <p>
+                <strong>Total Marks:</strong>{" "}
+                {test.totalMarks}
+              </p>
+
+              <p>
+                <strong>Correct Marks:</strong>{" "}
+                {test.positiveMarks}
+              </p>
+
+              <p>
+                <strong>Wrong Marks:</strong>{" "}
+                {test.negativeMarks}
+              </p>
+
+              <p>
+                <strong>Unattempt Marks:</strong>{" "}
+                {test.unattemptMarks}
               </p>
 
               <span className="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded">

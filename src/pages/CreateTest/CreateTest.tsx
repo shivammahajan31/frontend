@@ -10,6 +10,9 @@ type FormData = {
   totalMarks: number;
   positiveMarks: number;
   negativeMarks: number;
+  topics: string;
+  subTopics: string;
+  unattemptMarks: number;
 };
 
 export default function CreateTest() {
@@ -28,7 +31,17 @@ export default function CreateTest() {
 
     const newTest = {
       id: Date.now(),
-      ...data,
+      testName: data.testName,
+      subject: data.subject,
+      difficulty: data.difficulty,
+      testType: data.testType,
+      totalTime: data.totalTime,
+      totalMarks: data.totalMarks,
+      positiveMarks: data.positiveMarks,
+      negativeMarks: data.negativeMarks,
+      topics: data.topics,
+      subTopics: data.subTopics,
+      unattemptMarks: data.unattemptMarks,
       status: "Draft",
     };
 
@@ -67,7 +80,9 @@ export default function CreateTest() {
         )}
 
         <select
-          {...register("subject")}
+          {...register("subject", {
+            required: "Subject is required",
+          })}
           className="border p-3 rounded w-full"
         >
           <option value="">Select Subject</option>
@@ -76,8 +91,16 @@ export default function CreateTest() {
           <option value="Chemistry">Chemistry</option>
         </select>
 
+        {errors.subject && (
+          <p className="text-red-500">
+            {errors.subject.message}
+          </p>
+        )}
+
         <select
-          {...register("difficulty")}
+          {...register("difficulty", {
+            required: "Difficulty is required",
+          })}
           className="border p-3 rounded w-full"
         >
           <option value="">Select Difficulty</option>
@@ -85,6 +108,24 @@ export default function CreateTest() {
           <option value="Medium">Medium</option>
           <option value="Hard">Hard</option>
         </select>
+
+        {errors.difficulty && (
+          <p className="text-red-500">
+            {errors.difficulty.message}
+          </p>
+        )}
+
+        <input
+          {...register("topics")}
+          placeholder="Topics (comma separated)"
+          className="border p-3 rounded w-full"
+        />
+
+        <input
+          {...register("subTopics")}
+          placeholder="Sub Topics (comma separated)"
+          className="border p-3 rounded w-full"
+        />
 
         <select
           {...register("testType")}
@@ -121,6 +162,13 @@ export default function CreateTest() {
           type="number"
           {...register("negativeMarks")}
           placeholder="Negative Marks"
+          className="border p-3 rounded w-full"
+        />
+
+        <input
+          type="number"
+          {...register("unattemptMarks")}
+          placeholder="Unattempt Marks"
           className="border p-3 rounded w-full"
         />
 

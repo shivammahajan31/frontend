@@ -7,6 +7,11 @@ interface Question {
   option3: string;
   option4: string;
   correctOption: string;
+  explanation: string;
+  difficulty: string;
+  topic: string;
+  subTopic: string;
+  mediaUrl: string;
 }
 
 export default function PreviewPublish() {
@@ -19,8 +24,6 @@ export default function PreviewPublish() {
   const handlePublish = () => {
     alert("Test Published Successfully");
 
-    localStorage.removeItem("questions");
-
     navigate("/dashboard");
   };
 
@@ -31,14 +34,16 @@ export default function PreviewPublish() {
       </h1>
 
       {questions.length === 0 ? (
-        <p>No questions added yet.</p>
+        <div className="bg-white p-4 rounded shadow">
+          No questions added yet.
+        </div>
       ) : (
         questions.map((q, index) => (
           <div
             key={index}
-            className="border rounded p-4 mb-4"
+            className="border rounded p-4 mb-4 bg-white shadow"
           >
-            <h2 className="font-semibold">
+            <h2 className="font-semibold text-lg mb-3">
               {index + 1}. {q.question}
             </h2>
 
@@ -47,19 +52,56 @@ export default function PreviewPublish() {
             <p>C. {q.option3}</p>
             <p>D. {q.option4}</p>
 
-            <p className="text-green-600 mt-2">
-              Correct Answer: {q.correctOption}
+            <p className="text-green-600 mt-3">
+              <strong>Correct Answer:</strong>{" "}
+              {q.correctOption}
             </p>
+
+            <p>
+              <strong>Difficulty:</strong>{" "}
+              {q.difficulty}
+            </p>
+
+            <p>
+              <strong>Topic:</strong>{" "}
+              {q.topic}
+            </p>
+
+            <p>
+              <strong>Sub Topic:</strong>{" "}
+              {q.subTopic}
+            </p>
+
+            <p>
+              <strong>Explanation:</strong>{" "}
+              {q.explanation}
+            </p>
+
+            {q.mediaUrl && (
+              <p>
+                <strong>Media URL:</strong>{" "}
+                <a
+                  href={q.mediaUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  Open Media
+                </a>
+              </p>
+            )}
           </div>
         ))
       )}
 
-      <button
-        onClick={handlePublish}
-        className="bg-green-600 text-white px-5 py-2 rounded mt-4"
-      >
-        Publish Test
-      </button>
+      {questions.length > 0 && (
+        <button
+          onClick={handlePublish}
+          className="bg-green-600 text-white px-5 py-2 rounded mt-4"
+        >
+          Publish Test
+        </button>
+      )}
     </div>
   );
 }
