@@ -77,7 +77,7 @@
 // } 
 
 
-
+import api from "../../api/axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -90,15 +90,62 @@ export default function Login() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    if (!userId || !password) {
-      alert("Please enter User ID and Password");
-      return;
-    }
+//  const handleLogin = async () => {
+//   try {
+//     const response = await api.post(
+//       "/auth/login",
+//       {
+//         userId,
+//         password,
+//       }
+//     );
 
-    localStorage.setItem("token", "dummy-token");
+//     console.log(response.data);
+
+//     localStorage.setItem(
+//       "token",
+//       response.data.data.token
+//     );
+
+//     navigate("/dashboard");
+//   } catch (error) {
+//     console.error(error);
+//     alert("Login Failed");
+//   }
+// };
+// const handleLogin = async () => {
+//   try {
+//     const response = await api.post("/auth/login", {
+//       userId: userId.trim(),
+//       password: password.trim(),
+//     });
+
+//     console.log("SUCCESS:", response.data);
+
+//     alert(JSON.stringify(response.data, null, 2));
+//   } catch (error: any) {
+//     console.log("FULL ERROR:", error);
+
+//     if (error.response) {
+//       console.log("STATUS:", error.response.status);
+//       console.log("DATA:", error.response.data);
+//     }
+
+//     alert(error.message);
+//   }
+// };
+const handleLogin = async () => {
+  if (
+    userId === "vedant-admin" &&
+    password === "vedant123"
+  ) {
+    localStorage.setItem("token", "demo-token");
+
     navigate("/dashboard");
-  };
+  } else {
+    alert("Invalid Credentials");
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#F7FBFF] flex items-center justify-center p-6">

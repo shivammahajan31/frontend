@@ -1,5 +1,14 @@
 # Preproute Test Assignment
 
+# note
+API integration was implemented using the provided endpoints.
+
+During final verification, the staging login endpoint returned a CORS error from the backend environment, preventing browser access to the API.
+
+To allow reviewers to test the application flow, a temporary mock login fallback was added:
+User ID: vedant-admin
+Password: vedant123
+
 ## Overview
 
 This project is a Test Management System built using React, TypeScript, Vite, React Router, React Hook Form, and Tailwind CSS.

@@ -1,3 +1,5 @@
+// 
+import api from "../../api/axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,12 +25,18 @@ export default function Dashboard() {
   const [tests, setTests] = useState<Test[]>([]);
 
   useEffect(() => {
-    const savedTests = JSON.parse(
-      localStorage.getItem("tests") || "[]"
-    ) as Test[];
+  fetchTests();
+}, []);
 
-    setTests(savedTests);
-  }, []);
+const fetchTests = async () => {
+  try {
+    const response = await api.get("/tests");
+
+    setTests(response.data.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const handleDelete = (id: number) => {
     const updatedTests = tests.filter(
@@ -48,125 +56,283 @@ export default function Dashboard() {
     navigate("/");
   };
 
+  const publishedCount = tests.filter(
+    (test) => test.status === "Published"
+  ).length;
+
+  const draftCount = tests.length - publishedCount;
+
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">
-          Dashboard
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6 md:p-10">
+      {/* Header */}
+      <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-5">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-800">
+              Dashboard
+            </h1>
 
-        <div className="flex gap-3">
-          <button
-            onClick={() => navigate("/create-test")}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-          >
-            Create Test
-          </button>
+            <p className="text-gray-500 mt-2">
+              Manage, edit and publish your tests
+            </p>
+          </div>
 
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg"
-          >
-            Logout
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() =>
+                navigate("/create-test")
+              }
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:scale-105 transition-all duration-300"
+            >
+              + Create Test
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 
-      {tests.length === 0 ? (
-        <div className="bg-white p-8 rounded-xl shadow text-center">
-          <h2 className="text-xl font-semibold">
-            No Tests Created Yet
+      {/* Stats */}
+      <div className="grid md:grid-cols-3 gap-5 mb-8">
+        <div className="bg-white rounded-3xl shadow-lg p-6">
+          <p className="text-gray-500">
+            Total Tests
+          </p>
+
+          <h2 className="text-4xl font-bold text-blue-600 mt-2">
+            {tests.length}
           </h2>
         </div>
+
+        <div className="bg-white rounded-3xl shadow-lg p-6">
+          <p className="text-gray-500">
+            Published Tests
+          </p>
+
+          <h2 className="text-4xl font-bold text-green-600 mt-2">
+            {publishedCount}
+          </h2>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-lg p-6">
+          <p className="text-gray-500">
+            Draft Tests
+          </p>
+
+          <h2 className="text-4xl font-bold text-orange-500 mt-2">
+            {draftCount}
+          </h2>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      {tests.length === 0 ? (
+        <div className="bg-white rounded-3xl shadow-lg p-16 text-center">
+          <div className="text-7xl mb-5">
+            📝
+          </div>
+
+          <h2 className="text-3xl font-bold text-gray-700">
+            No Tests Created Yet
+          </h2>
+
+          <p className="text-gray-500 mt-3">
+            Create your first test and start
+            managing assessments.
+          </p>
+
+          <button
+            onClick={() =>
+              navigate("/create-test")
+            }
+            className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition"
+          >
+            Create First Test
+          </button>
+        </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-6">
           {tests.map((test) => (
             <div
               key={test.id}
-              className="bg-white rounded-xl shadow p-5"
+              className="bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
             >
-              <h2 className="text-xl font-semibold mb-3">
-                {test.testName}
-              </h2>
+              <div className="p-6">
+                {/* Title */}
+                <div className="flex flex-col md:flex-row justify-between md:items-start gap-4 mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      {test.testName}
+                    </h2>
 
-              <p>
-                <strong>Subject:</strong>{" "}
-                {test.subject}
-              </p>
+                    <p className="text-gray-500 mt-1">
+                      {test.subject}
+                    </p>
+                  </div>
 
-              <p>
-                <strong>Difficulty:</strong>{" "}
-                {test.difficulty}
-              </p>
+                  <span
+                    className={`px-4 py-2 rounded-full text-sm font-medium w-fit ${
+                      test.status ===
+                      "Published"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {test.status}
+                  </span>
+                </div>
 
-              <p>
-                <strong>Test Type:</strong>{" "}
-                {test.testType}
-              </p>
+                {/* Details */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-6">
+                  <div>
+                    <p className="text-gray-400 text-sm">
+                      Difficulty
+                    </p>
 
-              <p>
-                <strong>Topics:</strong>{" "}
-                {test.topics}
-              </p>
+                    <p className="font-semibold">
+                      {test.difficulty}
+                    </p>
+                  </div>
 
-              <p>
-                <strong>Sub Topics:</strong>{" "}
-                {test.subTopics}
-              </p>
+                  <div>
+                    <p className="text-gray-400 text-sm">
+                      Test Type
+                    </p>
 
-              <p>
-                <strong>Total Time:</strong>{" "}
-                {test.totalTime} mins
-              </p>
+                    <p className="font-semibold">
+                      {test.testType}
+                    </p>
+                  </div>
 
-              <p>
-                <strong>Total Marks:</strong>{" "}
-                {test.totalMarks}
-              </p>
+                  <div>
+                    <p className="text-gray-400 text-sm">
+                      Duration
+                    </p>
 
-              <p>
-                <strong>Correct Marks:</strong>{" "}
-                {test.positiveMarks}
-              </p>
+                    <p className="font-semibold">
+                      {test.totalTime} mins
+                    </p>
+                  </div>
 
-              <p>
-                <strong>Wrong Marks:</strong>{" "}
-                {test.negativeMarks}
-              </p>
+                  <div>
+                    <p className="text-gray-400 text-sm">
+                      Total Marks
+                    </p>
 
-              <p>
-                <strong>Unattempt Marks:</strong>{" "}
-                {test.unattemptMarks}
-              </p>
+                    <p className="font-semibold">
+                      {test.totalMarks}
+                    </p>
+                  </div>
+                </div>
 
-              <span className="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded">
-                {test.status}
-              </span>
+                {/* Marks */}
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-green-50 rounded-xl p-4">
+                    <p className="text-sm text-gray-500">
+                      Correct Answer
+                    </p>
 
-              <div className="flex gap-2 mt-4">
+                    <p className="font-bold text-green-600">
+                      +{test.positiveMarks}
+                    </p>
+                  </div>
+
+                  <div className="bg-red-50 rounded-xl p-4">
+                    <p className="text-sm text-gray-500">
+                      Wrong Answer
+                    </p>
+
+                    <p className="font-bold text-red-600">
+                      {test.negativeMarks}
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-sm text-gray-500">
+                      Unattempted
+                    </p>
+
+                    <p className="font-bold text-gray-600">
+                      {test.unattemptMarks}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Topics */}
+                <div className="mb-4">
+                  <p className="font-semibold text-gray-700 mb-3">
+                    Topics
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {test.topics
+                      ?.split(",")
+                      .map(
+                        (
+                          topic,
+                          index
+                        ) => (
+                          <span
+                            key={index}
+                            className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
+                          >
+                            {topic.trim()}
+                          </span>
+                        )
+                      )}
+                  </div>
+                </div>
+
+                {/* Sub Topics */}
+                {test.subTopics && (
+                  <div className="mb-4">
+                    <p className="font-semibold text-gray-700 mb-2">
+                      Sub Topics
+                    </p>
+
+                    <p className="text-gray-600">
+                      {test.subTopics}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="border-t bg-gray-50 p-4 flex flex-wrap gap-3">
                 <button
                   onClick={() =>
-                    navigate("/preview-publish")
+                    navigate(
+                      "/preview-publish"
+                    )
                   }
-                  className="bg-blue-500 text-white px-3 py-1 rounded"
+                  className="flex-1 min-w-[120px] bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition"
                 >
                   View
                 </button>
 
                 <button
                   onClick={() =>
-                    navigate("/create-test")
+                    navigate(
+                      "/create-test"
+                    )
                   }
-                  className="bg-green-500 text-white px-3 py-1 rounded"
+                  className="flex-1 min-w-[120px] bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition"
                 >
                   Edit
                 </button>
 
                 <button
                   onClick={() =>
-                    handleDelete(test.id)
+                    handleDelete(
+                      test.id
+                    )
                   }
-                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  className="flex-1 min-w-[120px] bg-red-600 text-white py-3 rounded-xl hover:bg-red-700 transition"
                 >
                   Delete
                 </button>
