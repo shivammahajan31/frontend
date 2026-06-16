@@ -212,11 +212,10 @@ const handleLogin = async () => {
             </button>
 
             <button
-              onClick={handleLogin}
-              className="w-full h-[48px] bg-[#5A84F5] hover:bg-[#4A74E5] text-white rounded-md font-medium transition"
-            >
-              Login
-            </button>
+  onClick={handleLogin}
+  disabled={!userId || !password}
+  className="w-full h-[48px] bg-[#5A84F5] disabled:opacity-50 text-white rounded-md font-medium"
+></button>
 
           </div>
         </div>

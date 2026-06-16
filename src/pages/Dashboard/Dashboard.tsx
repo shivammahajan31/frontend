@@ -1,346 +1,260 @@
-// 
-import api from "../../api/axios";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface Test {
-  id: number;
-  testName: string;
-  subject: string;
-  difficulty: string;
-  testType: string;
-  totalTime: number;
-  totalMarks: number;
-  positiveMarks: number;
-  negativeMarks: number;
-  unattemptMarks: number;
-  topics: string;
-  subTopics: string;
-  status: string;
-}
+import logo from "../../assets/logo.png.svg";
+import avatar from "../../assets/admin-avatar.svg";
+
+import dashboardIcon from "../../assets/dashboard.svg";
+import questionIcon from "../../assets/question.svg";
+import trackingIcon from "../../assets/tracking.svg";
+import bellIcon from "../../assets/bell.svg";
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const [tests, setTests] = useState<Test[]>([]);
+  const tests = JSON.parse(
+    localStorage.getItem("tests") || "[]"
+  );
 
-  useEffect(() => {
-  fetchTests();
-}, []);
+  const questions = JSON.parse(
+    localStorage.getItem("questions") || "[]"
+  );
 
-const fetchTests = async () => {
-  try {
-    const response = await api.get("/tests");
+  const totalTests = tests.length;
 
-    setTests(response.data.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+  const publishedTests = tests.filter(
+    (test: any) => test.status === "Published"
+  ).length;
 
-  const handleDelete = (id: number) => {
-    const updatedTests = tests.filter(
-      (test) => test.id !== id
-    );
-
-    setTests(updatedTests);
-
-    localStorage.setItem(
-      "tests",
-      JSON.stringify(updatedTests)
-    );
-  };
+  const draftTests = totalTests - publishedTests;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
 
-  const publishedCount = tests.filter(
-    (test) => test.status === "Published"
-  ).length;
-
-  const draftCount = tests.length - publishedCount;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6 md:p-10">
-      {/* Header */}
-      <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8 mb-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-5">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-800">
-              Dashboard
-            </h1>
+    <div className="flex min-h-screen bg-[#F7FBFF]">
+      {/* SIDEBAR */}
+      <div className="w-[260px] bg-white border-r border-gray-200">
 
-            <p className="text-gray-500 mt-2">
-              Manage, edit and publish your tests
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() =>
-                navigate("/create-test")
-              }
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:scale-105 transition-all duration-300"
-            >
-              + Create Test
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:bg-red-600 transition"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid md:grid-cols-3 gap-5 mb-8">
-        <div className="bg-white rounded-3xl shadow-lg p-6">
-          <p className="text-gray-500">
-            Total Tests
-          </p>
-
-          <h2 className="text-4xl font-bold text-blue-600 mt-2">
-            {tests.length}
-          </h2>
+        <div className="p-6 border-b">
+          <img
+            src={logo}
+            alt="logo"
+            className="h-10"
+          />
         </div>
 
-        <div className="bg-white rounded-3xl shadow-lg p-6">
-          <p className="text-gray-500">
-            Published Tests
-          </p>
+        <div className="p-4 space-y-2">
 
-          <h2 className="text-4xl font-bold text-green-600 mt-2">
-            {publishedCount}
-          </h2>
-        </div>
-
-        <div className="bg-white rounded-3xl shadow-lg p-6">
-          <p className="text-gray-500">
-            Draft Tests
-          </p>
-
-          <h2 className="text-4xl font-bold text-orange-500 mt-2">
-            {draftCount}
-          </h2>
-        </div>
-      </div>
-
-      {/* Empty State */}
-      {tests.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-lg p-16 text-center">
-          <div className="text-7xl mb-5">
-            📝
-          </div>
-
-          <h2 className="text-3xl font-bold text-gray-700">
-            No Tests Created Yet
-          </h2>
-
-          <p className="text-gray-500 mt-3">
-            Create your first test and start
-            managing assessments.
-          </p>
+          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-50 text-indigo-600 font-medium">
+            <img
+              src={dashboardIcon}
+              alt=""
+              className="w-5 h-5"
+            />
+            Dashboard
+          </button>
 
           <button
             onClick={() =>
               navigate("/create-test")
             }
-            className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100"
           >
-            Create First Test
+            <img
+              src={questionIcon}
+              alt=""
+              className="w-5 h-5"
+            />
+            Test Creation
           </button>
+
+          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100">
+            <img
+              src={trackingIcon}
+              alt=""
+              className="w-5 h-5"
+            />
+            Test Tracking
+          </button>
+
         </div>
-      ) : (
-        <div className="grid gap-6">
-          {tests.map((test) => (
-            <div
-              key={test.id}
-              className="bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-            >
-              <div className="p-6">
-                {/* Title */}
-                <div className="flex flex-col md:flex-row justify-between md:items-start gap-4 mb-6">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-800">
-                      {test.testName}
-                    </h2>
+      </div>
 
-                    <p className="text-gray-500 mt-1">
-                      {test.subject}
-                    </p>
-                  </div>
+      {/* MAIN */}
+      <div className="flex-1">
 
-                  <span
-                    className={`px-4 py-2 rounded-full text-sm font-medium w-fit ${
-                      test.status ===
-                      "Published"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {test.status}
-                  </span>
-                </div>
+        {/* TOPBAR */}
+        <div className="h-20 bg-white border-b flex justify-end items-center px-8 gap-5">
 
-                {/* Details */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-6">
-                  <div>
-                    <p className="text-gray-400 text-sm">
-                      Difficulty
-                    </p>
+          <img
+            src={bellIcon}
+            alt=""
+            className="w-6 h-6 cursor-pointer"
+          />
 
-                    <p className="font-semibold">
-                      {test.difficulty}
-                    </p>
-                  </div>
+          <div className="flex items-center gap-3">
 
-                  <div>
-                    <p className="text-gray-400 text-sm">
-                      Test Type
-                    </p>
+            <img
+              src={avatar}
+              alt=""
+              className="w-11 h-11 rounded-full"
+            />
 
-                    <p className="font-semibold">
-                      {test.testType}
-                    </p>
-                  </div>
+            <div>
+              <p className="font-semibold">
+                Shivam Mahajan
+              </p>
 
-                  <div>
-                    <p className="text-gray-400 text-sm">
-                      Duration
-                    </p>
-
-                    <p className="font-semibold">
-                      {test.totalTime} mins
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-gray-400 text-sm">
-                      Total Marks
-                    </p>
-
-                    <p className="font-semibold">
-                      {test.totalMarks}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Marks */}
-                <div className="grid md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-green-50 rounded-xl p-4">
-                    <p className="text-sm text-gray-500">
-                      Correct Answer
-                    </p>
-
-                    <p className="font-bold text-green-600">
-                      +{test.positiveMarks}
-                    </p>
-                  </div>
-
-                  <div className="bg-red-50 rounded-xl p-4">
-                    <p className="text-sm text-gray-500">
-                      Wrong Answer
-                    </p>
-
-                    <p className="font-bold text-red-600">
-                      {test.negativeMarks}
-                    </p>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <p className="text-sm text-gray-500">
-                      Unattempted
-                    </p>
-
-                    <p className="font-bold text-gray-600">
-                      {test.unattemptMarks}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Topics */}
-                <div className="mb-4">
-                  <p className="font-semibold text-gray-700 mb-3">
-                    Topics
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    {test.topics
-                      ?.split(",")
-                      .map(
-                        (
-                          topic,
-                          index
-                        ) => (
-                          <span
-                            key={index}
-                            className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm"
-                          >
-                            {topic.trim()}
-                          </span>
-                        )
-                      )}
-                  </div>
-                </div>
-
-                {/* Sub Topics */}
-                {test.subTopics && (
-                  <div className="mb-4">
-                    <p className="font-semibold text-gray-700 mb-2">
-                      Sub Topics
-                    </p>
-
-                    <p className="text-gray-600">
-                      {test.subTopics}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Actions */}
-              <div className="border-t bg-gray-50 p-4 flex flex-wrap gap-3">
-                <button
-                  onClick={() =>
-                    navigate(
-                      "/preview-publish"
-                    )
-                  }
-                  className="flex-1 min-w-[120px] bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition"
-                >
-                  View
-                </button>
-
-                <button
-                  onClick={() =>
-                    navigate(
-                      "/create-test"
-                    )
-                  }
-                  className="flex-1 min-w-[120px] bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition"
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() =>
-                    handleDelete(
-                      test.id
-                    )
-                  }
-                  className="flex-1 min-w-[120px] bg-red-600 text-white py-3 rounded-xl hover:bg-red-700 transition"
-                >
-                  Delete
-                </button>
-              </div>
+              <p className="text-xs text-gray-500">
+                Administrator
+              </p>
             </div>
-          ))}
+
+          </div>
+
         </div>
-      )}
+
+        {/* CONTENT */}
+        <div className="p-8">
+
+          <h1 className="text-3xl font-semibold text-gray-800">
+            Dashboard
+          </h1>
+
+          <p className="text-gray-500 mt-2">
+            Welcome to Preproute Test Management
+            System
+          </p>
+
+          {/* STATS */}
+          <div className="grid md:grid-cols-4 gap-6 mt-8">
+
+            <div className="bg-white rounded-2xl border p-6">
+              <p className="text-gray-500">
+                Total Tests
+              </p>
+
+              <h2 className="text-4xl font-bold text-indigo-600 mt-3">
+                {totalTests}
+              </h2>
+            </div>
+
+            <div className="bg-white rounded-2xl border p-6">
+              <p className="text-gray-500">
+                Published Tests
+              </p>
+
+              <h2 className="text-4xl font-bold text-green-600 mt-3">
+                {publishedTests}
+              </h2>
+            </div>
+
+            <div className="bg-white rounded-2xl border p-6">
+              <p className="text-gray-500">
+                Draft Tests
+              </p>
+
+              <h2 className="text-4xl font-bold text-orange-500 mt-3">
+                {draftTests}
+              </h2>
+            </div>
+
+            <div className="bg-white rounded-2xl border p-6">
+              <p className="text-gray-500">
+                Total Questions
+              </p>
+
+              <h2 className="text-4xl font-bold text-blue-600 mt-3">
+                {questions.length}
+              </h2>
+            </div>
+
+          </div>
+
+          {/* QUICK ACTIONS */}
+          <div className="bg-white rounded-2xl border p-8 mt-8">
+
+            <h2 className="text-xl font-semibold mb-5">
+              Quick Actions
+            </h2>
+
+            <div className="flex gap-4">
+
+              <button
+                onClick={() =>
+                  navigate("/create-test")
+                }
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl"
+              >
+                Create Test
+              </button>
+
+              <button
+                onClick={() =>
+                  navigate("/add-questions")
+                }
+                className="border px-6 py-3 rounded-xl"
+              >
+                Add Questions
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="border px-6 py-3 rounded-xl"
+              >
+                Logout
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* RECENT ACTIVITY */}
+          <div className="bg-white rounded-2xl border p-8 mt-8">
+
+            <h2 className="text-xl font-semibold mb-4">
+              Recent Activity
+            </h2>
+
+            {tests.length === 0 ? (
+              <p className="text-gray-500">
+                No tests created yet.
+              </p>
+            ) : (
+              <div className="space-y-3">
+
+                {tests
+                  .slice(-5)
+                  .reverse()
+                  .map(
+                    (
+                      test: any,
+                      index: number
+                    ) => (
+                      <div
+                        key={index}
+                        className="flex justify-between border-b pb-3"
+                      >
+                        <span>
+                          {test.testName}
+                        </span>
+
+                        <span className="text-gray-500">
+                          {test.status}
+                        </span>
+                      </div>
+                    )
+                  )}
+
+              </div>
+            )}
+
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }
